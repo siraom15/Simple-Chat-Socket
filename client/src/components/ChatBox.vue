@@ -26,9 +26,9 @@ const messageContent: Ref<String> = ref('');
         v-for="(message, index) in currentMessages"
         :key="index"
         :class="
-          message.sender == 'Me'
+          message.type == 'local'
             ? ['bg-blue-300', 'text-white', 'text-right']
-            : message.sender == 'System'
+            : message.type == 'system'
             ? ['bg-red-500', 'text-white', 'text-center']
             : []
         "

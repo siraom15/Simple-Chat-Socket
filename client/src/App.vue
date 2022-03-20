@@ -4,17 +4,18 @@ import { computed, onBeforeMount, Ref, ref } from 'vue';
 import ChatBox from './components/ChatBox.vue';
 import RoomBox from './components/RoomBox.vue';
 import NameBox from './components/NameBox.vue';
+import ServerStatusBox from './components/ServerStatusBox.vue';
 
 const socket = io('http://localhost:3000');
 const currentMessages: Ref<Array<Object>> = ref([]);
 const roomId: Ref<String> = ref('general');
 const displayName: Ref<String> = ref('');
-
-const getCurrentMessage = computed(() => currentMessages);
+const serverStatus: Ref<Boolean> = ref(false);
 
 onBeforeMount(() => {
   socket.on('connection', (data) => {
     console.log(data);
+    if (data) serverStatus.value = true;
     displayName.value = data.clientId;
     joinRoom(roomId.value);
   });
@@ -30,13 +31,14 @@ const joinRoom = (targetRoomId: String) => {
   roomId.value = targetRoomId;
   currentMessages.value = [];
   currentMessages.value.push({
-    sender: 'System',
+    sender: 'system',
+    type: 'system',
     message: `You has joined the room`,
   });
 };
 socket.on('joined_room', (data: any) => {
   currentMessages.value.push({
-    sender: 'System',
+    type: 'system',
     message: `${data.clientId} has joined the room`,
   });
 });
@@ -46,7 +48,7 @@ const leaveRoom = (targetRoomId: String) => {
 };
 socket.on('leaved_room', (data: any) => {
   currentMessages.value.push({
-    sender: 'System',
+    type: 'system',
     message: `${data.clientId} has left the room`,
   });
 });
@@ -60,11 +62,13 @@ const setDisplayName = (EmitName: String) => {
 
 const sendMessage = (EmitMessage: String) => {
   const sendedMessage = {
+    type: 'client',
     sender: displayName.value,
     message: EmitMessage,
     roomId: roomId.value.length ? roomId.value : null,
   };
   const myMessage = {
+    type: 'local',
     sender: 'Me',
     message: EmitMessage,
     roomId: roomId.value.length ? roomId.value : null,
@@ -76,13 +80,14 @@ const sendMessage = (EmitMessage: String) => {
 </script>
 
 <template>
-  <div class="container p-10">
-    <div class="grid grid-rows-3 grid-flow-col gap-4">
-      <div class="row-span-3">
+  <div class="container p-20 mx-auto">
+    <ServerStatusBox :server-status="serverStatus" />
+    <div class="grid grid-cols-2 max-w-full">
+      <div class="grid grid-row-3">
         <RoomBox @changeRoom="changeRoom" :currentRoomId="roomId" />
         <NameBox @setDisplayName="setDisplayName" :displayName="displayName" />
       </div>
-      <div class="row-span-2 col-span-2">
+      <div class="grid grid-row-1">
         <ChatBox
           :roomId="roomId"
           :currentMessages="currentMessages"

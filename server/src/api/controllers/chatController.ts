@@ -17,10 +17,8 @@ export class ChatController {
   ) {
     const sendingMessage = {
       clientId: socket.id,
-      message: message.message,
-      sender: message.sender,
-      roomId: message.roomId,
+      ...message,
     };
-    socket.to(message.roomId).emit("message", sendingMessage);
+    socket.broadcast.to(message.roomId).emit("message", sendingMessage);
   }
 }

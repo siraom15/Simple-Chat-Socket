@@ -16,7 +16,9 @@ export class RoomController {
     @MessageBody() message: any
   ): void {
     socket.join(message.roomId);
-    socket.to(message.roomId).emit("joined_room", {
+    socket.broadcast.to(message.roomId).emit("joined_room", {
+      type: "system",
+      sender: "system",
       clientId: socket.id,
       roomId: message.roomId,
     });
@@ -24,12 +26,12 @@ export class RoomController {
 
   @OnMessage("leave_room")
   public leaveRoom(
-    @SocketIO() io: Server,
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: any
   ) {
     socket.leave(message.roomId);
-    socket.to(message.roomId).emit("leaved_room", {
+    socket.broadcast.to(message.roomId).emit("leaved_room", {
+      type: "system",
       clientId: socket.id,
       roomId: message.roomId,
     });
