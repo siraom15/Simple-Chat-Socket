@@ -21,24 +21,34 @@ const messageContent: Ref<String> = ref('');
     class="p-4 mt-5 max-w-full bg-white rounded-lg border border-gray-200 shadow-md"
   >
     <h1 class="text-center text-xl font-bold">Chat Room : {{ roomId }}</h1>
-    <div
-      v-for="(message, index) in currentMessages"
-      :key="index"
-      :class="
-        message.sender == 'Me'
-          ? ['bg-blue-300', 'text-white']
-          : message.sender == 'System'
-          ? ['bg-red-500', 'text-white']
-          : []
-      "
-      class="p-4 mt-5 max-w-sm rounded-lg border border-gray-200 shadow-md"
-    >
-      <p>
-        <span class="font-bold"> {{ message.sender }}</span> :
-        {{ message.message }}
-      </p>
+    <div class="overflow-y-auto h-96">
+      <div
+        v-for="(message, index) in currentMessages"
+        :key="index"
+        :class="
+          message.sender == 'Me'
+            ? ['bg-blue-300', 'text-white', 'text-right']
+            : message.sender == 'System'
+            ? ['bg-red-500', 'text-white', 'text-center']
+            : []
+        "
+        class="p-4 mt-5 max-w-sm rounded-lg border border-gray-200 shadow-md"
+      >
+        <p>
+          <span class="font-bold"> {{ message.sender }}</span> :
+          {{ message.message }}
+        </p>
+      </div>
     </div>
-    <form @submit.prevent="$emit('sendMessage', messageContent)">
+
+    <form
+      @submit.prevent="
+        () => {
+          $emit('sendMessage', messageContent);
+          messageContent = '';
+        }
+      "
+    >
       <div class="relative z-0 mb-6 w-full group mt-5">
         <input
           v-model="messageContent"

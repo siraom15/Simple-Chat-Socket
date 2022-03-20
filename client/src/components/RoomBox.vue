@@ -13,7 +13,7 @@ const roomId = ref('');
 
 <template>
   <div
-    class="p-4 mt-5 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md"
+    class="p-4 mt-5 max-w-sm max-h-screen bg-white rounded-lg border border-gray-200 shadow-md"
   >
     <h1 class="text-center text-xl font-bold">Join Room</h1>
 

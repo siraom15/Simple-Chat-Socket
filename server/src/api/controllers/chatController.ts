@@ -15,7 +15,6 @@ export class ChatController {
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: any
   ) {
-    console.log("Message From", socket.id, ":", message);
     const sendingMessage = {
       clientId: socket.id,
       message: message.message,

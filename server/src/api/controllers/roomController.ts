@@ -15,7 +15,6 @@ export class RoomController {
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: any
   ): void {
-    console.log("client " + socket.id + " joined room " + message.roomId);
     socket.join(message.roomId);
     socket.to(message.roomId).emit("joined_room", {
       clientId: socket.id,
@@ -29,7 +28,6 @@ export class RoomController {
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: any
   ) {
-    console.log("client " + socket.id + " joined room " + message.roomId);
     socket.leave(message.roomId);
     socket.to(message.roomId).emit("leaved_room", {
       clientId: socket.id,
