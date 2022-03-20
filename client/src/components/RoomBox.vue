@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { ref } from "@vue/reactivity";
+import { ref } from '@vue/reactivity';
 
-defineEmits(["joinRoom"]);
-
-const roomId = ref("");
-
+defineEmits(['changeRoom']);
+const props = defineProps({
+  currentRoomId: {
+    type: String,
+    require: true,
+  },
+});
+const roomId = ref('');
 </script>
 
 <template>
@@ -12,8 +16,10 @@ const roomId = ref("");
     class="p-4 mt-5 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md"
   >
     <h1 class="text-center text-xl font-bold">Join Room</h1>
-    
-    <form @submit.prevent="$emit('joinRoom', roomId)">
+
+    <form
+      @submit.prevent="$emit('changeRoom', { from: currentRoomId, to: roomId })"
+    >
       <div class="relative z-0 mb-6 w-full group">
         <input
           type="text"

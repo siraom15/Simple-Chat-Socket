@@ -8,6 +8,7 @@ import {
   SocketIO,
 } from "socket-controllers";
 import { Server, Socket } from "socket.io";
+import { RoomController } from "./roomController";
 
 @SocketController()
 export class MainController {
@@ -16,15 +17,18 @@ export class MainController {
     @ConnectedSocket() socket: Socket,
     @SocketIO() io: Server
   ): any {
-    socket.emit(
-      "connection",
-      "Connected To Socket Server : client id " + socket.id
-    );
-    console.log("New connection : " + socket.id);
+    socket.emit("connection", {
+      message: "connected",
+      clientId: socket.id,
+    });
+    console.log("client " + socket.id + " connected");
   }
 
   @OnDisconnect()
-  public onDisconecction(): void {
-    console.log("Disconnected");
+  public onDisconecction(
+    @ConnectedSocket() socket: Socket,
+    @SocketIO() io: Server
+  ): void {
+    console.log("client " + socket.id + " disconnected");
   }
 }

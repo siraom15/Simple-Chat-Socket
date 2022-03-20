@@ -15,14 +15,13 @@ export class ChatController {
     @ConnectedSocket() socket: Socket,
     @MessageBody() message: any
   ) {
-    const sendMessage = {
-        message: message.message,
-        sender: socket.id,
-    }
-    if (message.roomId) {
-      socket.broadcast.to(message.roomId).emit("message", sendMessage);
-    } else {
-      socket.broadcast.emit("message", sendMessage);
-    }
+    console.log("Message From", socket.id, ":", message);
+    const sendingMessage = {
+      clientId: socket.id,
+      message: message.message,
+      sender: message.sender,
+      roomId: message.roomId,
+    };
+    socket.to(message.roomId).emit("message", sendingMessage);
   }
 }

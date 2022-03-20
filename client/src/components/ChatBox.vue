@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { ref, Ref, toRef } from "vue";
+import { ref, Ref, toRef } from 'vue';
 
-const emits = defineEmits(["sendMessage"]);
+const emits = defineEmits(['sendMessage']);
 
 const props = defineProps({
   roomId: {
     type: String,
-    default: null,
+    default: 'General',
   },
   currentMessages: {
     type: Array,
     require: true,
   },
 });
-const messageContent: Ref<String> = ref("");
+const messageContent: Ref<String> = ref('');
 </script>
 
 <template>
@@ -24,10 +24,19 @@ const messageContent: Ref<String> = ref("");
     <div
       v-for="(message, index) in currentMessages"
       :key="index"
-      :class="message.sender == 'Me' ? ['bg-blue-300', 'text-white'] : []"
+      :class="
+        message.sender == 'Me'
+          ? ['bg-blue-300', 'text-white']
+          : message.sender == 'System'
+          ? ['bg-red-500', 'text-white']
+          : []
+      "
       class="p-4 mt-5 max-w-sm rounded-lg border border-gray-200 shadow-md"
     >
-      {{ message.sender }} : {{ message.message }}
+      <p>
+        <span class="font-bold"> {{ message.sender }}</span> :
+        {{ message.message }}
+      </p>
     </div>
     <form @submit.prevent="$emit('sendMessage', messageContent)">
       <div class="relative z-0 mb-6 w-full group mt-5">
